@@ -15,13 +15,11 @@ greet="Peace to you. Today it is " + time.strftime("%d %b")
 engine = pyttsx.init()
 engine.setProperty('rate', 110)
 
-#introduction fn
 def run():
     engine.say("Hi. My name is "+ myname)
     engine.say(greet)
     engine.runAndWait()
 
-#listening fn (sun is hindi of - listen)
 def sun():
     with sr.Microphone() as source:
             print ('Say Something!')
@@ -30,7 +28,7 @@ def sun():
             a = r.recognize_google(audio)
             return a
 
-run()
+#run()
 while(x!="bye"):
     x=sun()
     print(x)
@@ -44,9 +42,7 @@ while(x!="bye"):
         f.wdays()
     elif (x!='bye'):
         f.search(x)
-        engine.runAndWait()
     else:
         engine.say("Bye.")
-
-
+        
 engine.runAndWait()
