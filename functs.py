@@ -12,6 +12,9 @@ engine.setProperty('rate', 110)
 con = sqlite3.connect('dbva.db')
 con.text_factory = str
 c = con.cursor()
+browser = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver')
+browser.minimize_window()
+    
  
 
 
@@ -46,8 +49,6 @@ def clr():
 
 
 def search(x):
-    browser = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver')
-    browser.minimize_window()
     browser.get('http://google.co.in/')
     sbar = browser.find_element_by_id('lst-ib')
     sbar.send_keys(x)

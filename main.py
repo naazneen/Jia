@@ -4,6 +4,7 @@ import speech_recognition as sr
 import functs as f
 import Tkinter as tk
 import thread
+import threading
 from PIL import ImageTk, Image
 r = sr.Recognizer()
 
@@ -12,6 +13,14 @@ r = sr.Recognizer()
 engine = pyttsx.init()
 engine.setProperty('rate', 110)
 x='h'
+
+class App(threading.Thread):
+    def __init__(self, tk_root):
+        self.root = tk_root
+        threading.Thread.__init__(self)
+        self.start()
+    def run(self):
+        wake()
 
 
 
@@ -55,7 +64,7 @@ def bol():
             engine.say("Bye.")
             l1.config(text="bye")
             engine.runAndWait()
-            return
+            wake()
         else:
             a=f.search(x)
             l1.config(text=a)
@@ -66,6 +75,28 @@ def t2():
         thread.start_new_thread(bol,())
     except:
         print("error occured")
+
+wakewords = ['jia','jai','hello','listen','hey jia','computer maha shay']
+
+def wake():
+    while (True):
+        try:
+            with sr.Microphone() as source:
+                audio = r.listen(source)
+                a = r.recognize_google(audio)
+                if a in wakewords:
+                    engine.say("Nice to see you back.")
+                    engine.runAndWait()
+                    t2()
+        except:
+            pass
+
+    
+def ok():
+    for i in range(0,2):
+        engine.say("Hey")
+        engine.runAndWait()
+
 
 #engine.runAndWait()
 root = tk.Tk()
@@ -78,5 +109,9 @@ l1=tk.Label(root,text="Hey")
 l1.pack()
 l2=tk.Label(root,text="")
 l2.pack()
+
+b3=tk.Button(root,text="Wake",command=wake, background="#ffb3d9", foreground="#99004d",font=('Century Gothic',10))
+b3.pack()
+APP = App(root)
 root.mainloop()
 
