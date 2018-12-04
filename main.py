@@ -15,10 +15,12 @@ engine.setProperty('rate', 110)
 x='h'
 
 class App(threading.Thread):
+
     def __init__(self, tk_root):
         self.root = tk_root
         threading.Thread.__init__(self)
         self.start()
+
     def run(self):
         wake()
 
@@ -76,7 +78,7 @@ def t2():
     except:
         print("error occured")
 
-wakewords = ['jia','jai','hello','listen','hey jia','computer maha shay']
+wakewords = ['jiya','jai','hello','listen','hey jiya','computer maha shay']
 
 def wake():
     while (True):
@@ -84,6 +86,7 @@ def wake():
             with sr.Microphone() as source:
                 audio = r.listen(source)
                 a = r.recognize_google(audio)
+                l1.config(text=a)
                 if a in wakewords:
                     engine.say("Nice to see you back.")
                     engine.runAndWait()
@@ -110,8 +113,5 @@ l1.pack()
 l2=tk.Label(root,text="")
 l2.pack()
 
-b3=tk.Button(root,text="Wake",command=wake, background="#ffb3d9", foreground="#99004d",font=('Century Gothic',10))
-b3.pack()
 APP = App(root)
 root.mainloop()
-
