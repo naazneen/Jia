@@ -12,9 +12,16 @@ engine.setProperty('rate', 110)
 con = sqlite3.connect('dbva.db')
 con.text_factory = str
 c = con.cursor()
+
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('headless')
+driver = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver',chrome_options = chrome_options)
+
+"""
 browser = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver')
 browser.minimize_window()
-    
+   """ 
  
 
 
@@ -49,40 +56,50 @@ def clr():
 
 
 def search(x):
-    browser.get('http://google.co.in/')
-    sbar = browser.find_element_by_id('lst-ib')
+    driver.get('http://google.co.in/')
+    sbar = driver.find_element_by_css_selector('input.gLFyf.gsfi')
     sbar.send_keys(x)
     sbar.send_keys(Keys.ENTER)
-    
+
     try:
-        elem=browser.find_element_by_css_selector('div.MUxGbd.t51gnb.lyLwlc.lEBKkf')
+        elem = driver.find_element_by_css_selector('span.ILfuVd')
     except:
         pass
     try:
-        elem = browser.find_element_by_css_selector('span.ILfuVd.yZ8quc')
+        elem = driver.find_element_by_css_selector('div.vk_bk.dDoNo')
     except:
         pass
     try:
-        elem = browser.find_element_by_css_selector('div.Z0LcW')
+        elem=driver.find_element_by_css_selector('div.MUxGbd.t51gnb.lyLwlc.lEBKkf')
     except:
         pass
     try:
-        elem = browser.find_element_by_css_selector('div.title')
+        elem = driver.find_element_by_css_selector('span.ILfuVd.yZ8quc')
     except:
         pass
     try:
-        elem = browser.find_element_by_css_selector('div.BbbuR.uc9Qxb.uE1RRc')
+        elem = driver.find_element_by_css_selector('div.Z0LcW')
     except:
         pass
     try:
-        elem = browser.find_element_by_css_selector('span.vk_gy.vk_sh')
+        elem = driver.find_element_by_css_selector('div.title')
     except:
         pass
-    
+    try:
+        elem = driver.find_element_by_css_selector('div.BbbuR.uc9Qxb.uE1RRc')
+    except:
+        pass
+    try:
+        elem = driver.find_element_by_css_selector('span.vk_gy.vk_sh')
+    except:
+        pass
+    try:
+        elem = driver.find_element_by_css_selector('h.bNg8Rb')
+    except:
+        pass
         
-    elem = elem.text
-    elem = elem[:47]
-    return elem
+    e = elem.text
+    return e
     #print (elem)
     
     
