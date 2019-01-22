@@ -29,6 +29,8 @@ class App(threading.Thread):
 
 
 def sun():
+    lbl.unload()
+    lbl.load('listen.gif')
     try:
         with sr.Microphone() as source:
             l1.configure(text="I'm Listening")
@@ -42,6 +44,7 @@ def sun():
         t2()
 
 def bol():
+    lbl.unload()
     x='hi'
     while(True):
         x=sun()
@@ -65,12 +68,14 @@ def bol():
         elif (x=="bye"):
             engine.say("Bye.")
             l1.config(text="bye")
+            lbl.load('speak.gif')
             engine.runAndWait()
             wake()
         else:
             a=f.search(x)
             l1.config(text=a)
             engine.say(a)
+            lbl.load('speak.gif')
             engine.runAndWait()
 def t2():
     try:
@@ -103,9 +108,13 @@ def ok():
 
 #engine.runAndWait()
 root = tk.Tk()
-img = ImageTk.PhotoImage(Image.open("jiaaa.jpg"))
-panel = tk.Label(root, image = img)
-panel.pack()
+#img = ImageTk.PhotoImage(Image.open("listen.jpg"))
+#panel = tk.Label(root, image = img)
+#panel.pack()
+lbl = f.ImageLabel(root)
+lbl.pack()
+lbl.load('speak.gif')
+
 b1=tk.Button(root,text="Ask Jia",command=t2, background="#ffb3d9", foreground="#99004d",font=('Century Gothic',10))
 b1.pack()
 l1=tk.Label(root,text="Hey")
