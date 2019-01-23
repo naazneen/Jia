@@ -40,12 +40,14 @@ def sun():
     except:
         l1.configure(text="Sorry. I didn't heard that.")
         engine.say("Sorry. I didn't heard that.")
+        lbl.unload()
+        lbl.load('speak.gif')
         engine.runAndWait()
         t2()
 
 def bol():
-    lbl.unload()
-    x='hi'
+    #lbl.unload()
+    #x='hi'
     while(True):
         x=sun()
         l2.config(text=x)
@@ -53,9 +55,10 @@ def bol():
             f.intro()   
         elif(x=="who is your best friend"):
             engine.say("you are my best friend, ma'am")
-            engine.runAndWait()
+            #engine.runAndWait()
         elif (x=="name some fruits"):
             y=f.fruits()
+            engine.say(y)
             l1.config(text=y)
         elif (x=="read alphabets"):
             f.Alpha()
@@ -68,15 +71,17 @@ def bol():
         elif (x=="bye"):
             engine.say("Bye.")
             l1.config(text="bye")
-            lbl.load('speak.gif')
-            engine.runAndWait()
+            #lbl.load('speak.gif')
+            #engine.runAndWait()
             wake()
         else:
             a=f.search(x)
             l1.config(text=a)
             engine.say(a)
-            lbl.load('speak.gif')
-            engine.runAndWait()
+            #lbl.load('speak.gif')
+            #engine.runAndWait()
+        lbl.load('speak.gif')
+        engine.runAndWait()
 def t2():
     try:
         thread.start_new_thread(bol,())
@@ -113,7 +118,7 @@ root = tk.Tk()
 #panel.pack()
 lbl = f.ImageLabel(root)
 lbl.pack()
-lbl.load('speak.gif')
+lbl.load('still1.jpg')
 
 b1=tk.Button(root,text="Ask Jia",command=t2, background="#ffb3d9", foreground="#99004d",font=('Century Gothic',10))
 b1.pack()
