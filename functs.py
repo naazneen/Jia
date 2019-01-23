@@ -42,7 +42,7 @@ def fruits():
     engine.say("Fruits I know are")
     for f in voices:
         engine.say(f)
-    engine.runAndWait()
+    #engine.runAndWait()
     return voices
 def Alpha():
     for row in c.execute("select letters from alpha"):
