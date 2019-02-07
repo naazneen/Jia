@@ -27,82 +27,123 @@ class App(threading.Thread):
 
 
 
-
-def sun():
+def sun1():
     lbl.unload()
-    lbl.load('listen.gif')
+    lbl.load('still1.jpg')
     try:
         with sr.Microphone() as source:
-            l1.configure(text="I'm Listening")
+            l1.configure(text="I'm asleep")
             audio = r.listen(source)
             a = r.recognize_google(audio)
             return a
     except:
-        l1.configure(text="Sorry. I didn't heard that.")
-        engine.say("Sorry. I didn't heard that.")
-        lbl.unload()
-        lbl.load('speak.gif')
-        engine.runAndWait()
-        t2()
+        pass
 
-def bol():
+
+def sun():
+    print "inside sun"
+    lbl.unload()
+    lbl.load('listen.gif')
+    while True:
+        try:
+            with sr.Microphone() as source:
+                l1.configure(text="I'm Listening")
+                audio = r.listen(source)
+                a = r.recognize_google(audio)
+                #return a
+        except:
+            l1.configure(text="Sorry. I didn't heard that.")
+            engine.say("Sorry. I didn't heard that.")
+            lbl.unload()
+            lbl.load('speak.gif')
+            engine.runAndWait()
+            print "inside except in sun"
+            continue
+        else:
+            break
+    return a
+        #t2()
+        #bol()
+    #return a
+
+def bol(x):
+    print ("inside bol")
     #lbl.unload()
     #x='hi'
+    """while(True):
+        x=sun()"""
+    l2.config(text=x)
+    if (x=="who are you"):
+        f.intro()   
+    elif(x=="who is your best friend"):
+        engine.say("you are my best friend, ma'am")
+        #engine.runAndWait()
+    elif (x=="name some fruits"):
+        y=f.fruits()
+        engine.say(y)
+        l1.config(text=y)
+    elif (x=="read alphabets"):
+        f.Alpha()
+    elif (x=="what colours you know"):
+        f.clr()
+    elif (x=="days of the week"):
+        f.wdays()
+    elif (x=="hi"):
+        f.intro()
+    elif (x=="bye"):
+        engine.say("Bye.")
+        l1.config(text="bye")
+        lbl.load('still1.jpg')
+        engine.runAndWait()
+        wake()
+    else:
+        a=f.search(x)
+        l1.config(text=a)
+        engine.say(a)
+        #lbl.load('speak.gif')
+        #engine.runAndWait()
+    lbl.load('speak.gif')
+    engine.runAndWait()
+
+def t2():
+    print "inside t2"
     while(True):
         x=sun()
-        l2.config(text=x)
-        if (x=="who are you"):
-            f.intro()   
-        elif(x=="who is your best friend"):
-            engine.say("you are my best friend, ma'am")
-            #engine.runAndWait()
-        elif (x=="name some fruits"):
-            y=f.fruits()
-            engine.say(y)
-            l1.config(text=y)
-        elif (x=="read alphabets"):
-            f.Alpha()
-        elif (x=="what colours you know"):
-            f.clr()
-        elif (x=="days of the week"):
-            f.wdays()
-        elif (x=="hi"):
-            f.intro()
-        elif (x=="bye"):
-            engine.say("Bye.")
-            l1.config(text="bye")
-            #lbl.load('speak.gif')
-            #engine.runAndWait()
-            wake()
+        if (x=="bye"):
+            engine.say("Good Bye")
+            engine.runAndWait()
+            break
         else:
-            a=f.search(x)
-            l1.config(text=a)
-            engine.say(a)
-            #lbl.load('speak.gif')
-            #engine.runAndWait()
-        lbl.load('speak.gif')
-        engine.runAndWait()
-def t2():
-    try:
-        thread.start_new_thread(bol,())
-    except:
-        print("error occured")
+            #thread.start_new_thread(bol,(x,))
+            try:
+                thread.start_new_thread(bol,(x,))
+            except:
+                print("error occured in threat creation")
+        
 
-wakewords = ['jiya','jai','hello','listen','hey jiya','computer maha shay']
+wakewords = ['jia jee','good morning','jiya','jai','hello','listen','hey jiya','computer maha shay']
 
 def wake():
     while (True):
-        try:
-            with sr.Microphone() as source:
-                audio = r.listen(source)
-                a = r.recognize_google(audio)
-                l1.config(text=a)
-                if a in wakewords:
-                    engine.say("Nice to see you back.")
+        x=sun1()
+        if x in wakewords:
+            engine.say("Nice to see you back.")
+            engine.runAndWait()
+            while True:
+                x=sun()
+                if (x=="bye"):
+                    engine.say("Good Bye")
                     engine.runAndWait()
-                    t2()
-        except:
-            pass
+                    break
+                else:
+                    #thread.start_new_thread(bol,(x,))
+                    try:
+                        thread.start_new_thread(bol,(x,))
+                    except:
+                        print("error occured in threat creation")
+        print "in main loop"
+        
+        
 
     
 def ok():
