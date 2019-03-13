@@ -167,7 +167,7 @@ lbl = f.ImageLabel(frame1)
 lbl.grid(row=0,column=0,columnspan=3)
 lbl.load('still1.jpg')
 
-response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.NW)
+response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.W)
 response.grid(row=1,column=0,columnspan=3)
 request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.NE)
 request.grid(row=2,column=2,columnspan=3)
