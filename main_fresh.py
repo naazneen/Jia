@@ -16,6 +16,7 @@ wakewords = ['jia jee','good morning','jiya','jai','hello','listen','hey jiya','
 byewords = ['bye','good bye','good night','catch you later','see ya'] 
 greetwords = ['nice to see you back','good morning','welcome back','hi, I hope you are doing good','hi, how can I help you?']
 farewellwords = ['bye','see you soon','happy to helped you','good bye','good night','have a great day']
+passwordd=""
 
 class App(threading.Thread):
     def __init__(self, tk_root):
@@ -138,6 +139,7 @@ def showhome():
 
 root = tk.Tk()
 
+#main_window
 
 frame1=tk.Frame(root,width=340,height=340,background="Blue")
 frame1.grid(row=0,column=0,columnspan=3)
@@ -161,22 +163,145 @@ img4 = ImageTk.PhotoImage(Image.open("reports.jpg"))
 b4 = tk.Button(frame2,image=img4, command=callback, height=50, width=50)
 b4.grid(row=3,column=0,padx=10,pady=15)
 
-
+#home
 
 lbl = f.ImageLabel(frame1)
 lbl.grid(row=0,column=0,columnspan=3)
 lbl.load('still1.jpg')
 
+#request-response
 response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.W)
 response.grid(row=1,column=0,columnspan=3)
 request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.NE)
 request.grid(row=2,column=2,columnspan=3)
 
-frame3=tk.Frame(root,background="#B0DEFF")
+#settings
+frame3=tk.Frame(root,background="#B0DEFF",bd=4)
 frame3.configure(height=frame1["height"],width=frame1["width"])
 frame3.grid_propagate(0)
-passb=tk.Button(frame3,text="in settings")
-passb.grid(row=0,column=0)
+
+def voice_change():
+    #print "voice"
+    global i
+    voices = engine.getProperty('voices')
+    try:
+        i=i+1
+        #print i
+        engine.setProperty('voice',voices[i].id)
+        engine.say("voice changed.")
+        engine.runAndWait()
+    except:
+        if i > 1:
+            #print i
+            engine.say("i have these voices only.")
+            engine.runAndWait()
+        elif i==1:
+            #print i
+            engine.say("I have this voice only.")
+            engine.runAndWait()
+        i=0
+        
+def rate_changed():
+    #global var
+    p = int(rvar.get())
+    print p+50
+    rate = engine.getProperty('rate')
+    engine.setProperty('rate', p+50)
+    engine.say("This is new speed")
+    engine.runAndWait()
+
+def vol_changed():
+    #global var
+    p = float(vvar.get())
+    print p/10
+    volume = engine.getProperty('volume')
+    engine.setProperty('volume', p)
+    engine.say("This is new volume")
+    engine.runAndWait()
+
+
+def setpass():
+    global passwordd
+    engine.say("what will be new password?")
+    engine.runAndWait()
+    pass1=sun()
+    engine.say("speak password again.")
+    engine.runAndWait()
+    pass2=sun()
+    if pass1==pass2:
+        engine.say("password set successfully")
+        passwordd=pass1
+        print passwordd
+        engine.runAndWait()
+        sb5.grid(row=4,column=0,padx=10,pady=10)
+        return 1
+    else:
+        engine.say("password does not match.")
+        engine.runAndWait()
+        return 0
+    
+def changepass():
+    global passwordd
+    engine.say("speak old password.")
+    print passwordd
+    engine.runAndWait()
+    pass1=sun()
+    if pass1==passwordd:
+        v=setpass()
+        if v==1:
+            return 1
+        else:
+            return 0
+    else:
+        engine.say("Sorry. This is incorrect password.")
+        engine.runAndWait()
+        return 0
+        
+
+def password():
+    text=sb4['text']
+    print text
+    t.set("I am clicked")
+    if text=="set password":
+        valid=setpass()
+        if valid==1:
+            t.set("change password")
+        elif valid==0:
+            t.set("set password")
+    else:
+        valid=changepass()
+        if valid==1 or valid==0:
+            t.set("change password")
+
+def rem_password():
+    t.set("set password")
+    engine.say("Password removed successfully.")
+    engine.runAndWait() 
+    sb5.grid_remove()
+
+i=0   
+sb1= tk.Button(frame3,text="Change Voice",command=voice_change,bg="#A7DAFE")
+sb1.grid(row=0,column=0,padx=10,pady=10)
+
+rvar=tk.IntVar()
+rx = tk.Scale(frame3,label="Speech Rate",bd=1,bg="#B0DEFF",troughcolor="#A7DAFE",from_=0,to=200,orient=tk.HORIZONTAL,variable=rvar,resolution=10,length=250)
+rx.grid(row=1,column=0,padx=10,pady=10)
+sb2= tk.Button(frame3,text="Test",command=rate_changed,bg="#A7DAFE")
+sb2.grid(row=1,column=1,padx=10,pady=10)
+
+vvar=tk.DoubleVar()
+vx = tk.Scale(frame3,label="Speech volume",bd=1,bg="#B0DEFF",troughcolor="#A7DAFE",from_=1,to=10,orient=tk.HORIZONTAL,variable=vvar,resolution=1,length=250)
+vx.grid(row=2,column=0,padx=10,pady=10)
+sb3= tk.Button(frame3,text="Test",command=vol_changed,bg="#A7DAFE")
+sb3.grid(row=2,column=1,padx=10,pady=10)
+
+t=tk.StringVar()
+t.set("set password")
+sb4= tk.Button(frame3,textvariable=t,command=password,bg="#A7DAFE")
+sb4.grid(row=3,column=0,padx=10,pady=10)
+
+sb5= tk.Button(frame3,text="Remove password",command=rem_password,bg="#A7DAFE")
+
 
 
 

@@ -19,6 +19,7 @@ c = con.cursor()
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('headless')
+chrome_options.add_argument('--disable-gpu')
 driver = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver',chrome_options = chrome_options)
 
 """
@@ -59,11 +60,15 @@ def clr():
 
 
 def search(x):
+    print "in search"
     driver.get('http://google.co.in/')
+    print "got google"
     sbar = driver.find_element_by_css_selector('input.gLFyf.gsfi')
+    print "found input"
     sbar.send_keys(x)
+    print "sent keys"
     sbar.send_keys(Keys.ENTER)
-
+    print "sent enter"
     try:
         elem = driver.find_element_by_css_selector('span.ILfuVd')
     except:
@@ -99,9 +104,9 @@ def search(x):
     try:
         elem = driver.find_element_by_css_selector('h.bNg8Rb')
     except:
-        pass
-        
+        pass    
     e = elem.text
+    print e
     return e
     #print (elem)
     
