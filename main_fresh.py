@@ -1,5 +1,7 @@
 #imported stuff
 import pyttsx
+from functools import partial
+import sqlite3
 import speech_recognition as sr
 import functs as f
 import Tkinter as tk
@@ -131,14 +133,21 @@ def callback():
 
 def showsetting():
     frame1.grid_remove()
+    frame4.grid_remove()
     frame3.grid(row=0,column=0,columnspan=3)
 
 def showhome():
     frame3.grid_remove()
+    frame4.grid_remove()
     frame1.grid(row=0,column=0,columnspan=3)
 
+def showreports():
+    frame1.grid_remove() 
+    frame3.grid_remove()
+    frame4.grid(row=0,column=0,columnspan=3)
+    
 root = tk.Tk()
-
+root.configure(background="white")
 #main_window
 
 frame1=tk.Frame(root,width=340,height=340,background="Blue")
@@ -160,7 +169,7 @@ img3 = ImageTk.PhotoImage(Image.open("notes.jpg"))
 b3 = tk.Button(frame2,image=img3, command=callback, height=50, width=50)
 b3.grid(row=2,column=0,padx=10,pady=15)
 img4 = ImageTk.PhotoImage(Image.open("reports.jpg"))  
-b4 = tk.Button(frame2,image=img4, command=callback, height=50, width=50)
+b4 = tk.Button(frame2,image=img4, command=showreports, height=50, width=50)
 b4.grid(row=3,column=0,padx=10,pady=15)
 
 #home
@@ -170,13 +179,13 @@ lbl.grid(row=0,column=0,columnspan=3)
 lbl.load('still1.jpg')
 
 #request-response
-response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.W)
+response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=42,height=3,bg="#B0DEFF",anchor=tk.W)
 response.grid(row=1,column=0,columnspan=3)
-request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=40,height=3,bg="#B0DEFF",anchor=tk.NE)
-request.grid(row=2,column=2,columnspan=3)
+request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=42,height=3,bg="#B0DEFF",anchor=tk.E)
+request.grid(row=2,column=1,columnspan=3)
 
 #settings
-frame3=tk.Frame(root,background="#B0DEFF",bd=4)
+frame3=tk.Frame(root,background="white",bd=4)
 frame3.configure(height=frame1["height"],width=frame1["width"])
 frame3.grid_propagate(0)
 
@@ -302,6 +311,47 @@ sb4.grid(row=3,column=0,padx=10,pady=10)
 
 sb5= tk.Button(frame3,text="Remove password",command=rem_password,bg="#A7DAFE")
 
+#reports
+frame4=tk.Frame(root,background="#B0DEFF",bd=4)
+frame4.configure(height=frame1["height"],width=frame1["width"])
+frame4.grid_propagate(0)
+
+conn = sqlite3.connect('C:\Users\ABDUL\Downloads\sqlite-tools-win32-x86-3240000\sqlite-tools-win32-x86-3240000\dbva.db')
+print "Opened database successfully";
+cursor = conn.execute("SELECT * from reports")
+
+i=1
+j=0
+
+def v_report(x):
+    print "report"
+    print x
+    
+
+def v_details(x):
+    print "details"
+    x=str(x)
+    viewdetails = conn.execute("select * from reports where repid="+x)
+    for row in viewdetails:
+        r1=str(row[1])
+        r2=str(row[3])
+        r3=str(row[4])
+        r4=str(row[5])
+        t="Title : "+r1+"\nIssue Date : "+r2+"\nDue Date : "+r3+"\nStatus : "+r4
+        print t
+        dlabel=tk.Label(frame4,text=t)
+        dlabel.grid(row=3,column=0)
+    
+
+for row in cursor:
+    c = row[1]
+    b = tk.Label(frame4, text=c)
+    b.grid(row=i, column=j)
+    report=tk.Button(frame4, text="report", command = partial(v_report,row[0]))
+    report.grid(row=i,column=j+1)
+    detail=tk.Button(frame4, text="details", command = partial(v_details,row[0]))
+    detail.grid(row=i,column=j+2)
+    i=i+1
 
 
 
