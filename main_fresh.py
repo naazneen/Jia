@@ -8,10 +8,12 @@ import Tkinter as tk
 import thread
 import threading
 from PIL import ImageTk, Image
-r = sr.Recognizer()
+import random
+
 
  
 #initialisation
+r = sr.Recognizer()
 engine = pyttsx.init()
 engine.setProperty('rate', 120)
 wakewords = ['jia jee','good morning','jiya','jai','hello','listen','hey jiya','computer maha shay']
@@ -34,17 +36,20 @@ def wake():
         x=sleepy()
         if x in wakewords:
             print "heard wakewords"
+            engine.say(random.choice(greetwords))
+            engine.runAndWait()
             while (True):
                 print "inside while true"
                 x=sun()
-                if (x!="bye"):
-                    logic(x)
-                    #thread.start_new_thread(logic,(x,)) this was so unnecessary
-                else:
-                    engine.say("Good bye")
+                if x in byewords:
+                    engine.say(random.choice(farewellwords))
                     engine.runAndWait()
                     print "goodbye"
                     break
+                else:
+                    logic(x)
+                    #thread.start_new_thread(logic,(x,)) this was so unnecessary
+               
 
 def sleepy():
     print "inside sleepy"
@@ -270,7 +275,7 @@ def changepass():
 def password():
     text=sb4['text']
     print text
-    t.set("I am clicked")
+    #t.set("I am clicked")
     if text=="set password":
         valid=setpass()
         if valid==1:
@@ -287,6 +292,9 @@ def rem_password():
     engine.say("Password removed successfully.")
     engine.runAndWait() 
     sb5.grid_remove()
+
+def t_password():
+    thread.start_new_thread(password,())
 
 i=0   
 sb1= tk.Button(frame3,text="Change Voice",command=voice_change,bg="#A7DAFE")
@@ -306,7 +314,7 @@ sb3.grid(row=2,column=1,padx=10,pady=10)
 
 t=tk.StringVar()
 t.set("set password")
-sb4= tk.Button(frame3,textvariable=t,command=password,bg="#A7DAFE")
+sb4= tk.Button(frame3,textvariable=t,command=t_password,bg="#A7DAFE")
 sb4.grid(row=3,column=0,padx=10,pady=10)
 
 sb5= tk.Button(frame3,text="Remove password",command=rem_password,bg="#A7DAFE")
