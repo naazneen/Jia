@@ -9,6 +9,7 @@ import thread
 import threading
 from PIL import ImageTk, Image
 import random
+import msvcrt
 
 
  
@@ -17,10 +18,29 @@ r = sr.Recognizer()
 engine = pyttsx.init()
 engine.setProperty('rate', 120)
 wakewords = ['jia jee','good morning','jiya','jai','hello','listen','hey jiya','computer maha shay']
-byewords = ['bye','good bye','good night','catch you later','see ya'] 
-greetwords = ['nice to see you back','good morning','welcome back','hi, I hope you are doing good','hi, how can I help you?']
+byewords = ['bye','goodbye','good night','catch you later','see ya','siya'] 
+greetwords = ['nice to see you back','good morning','welcome back','hi, I hope you are doing good','hi, how can I help you']
 farewellwords = ['bye','see you soon','happy to helped you','good bye','good night','have a great day']
+thankwords=["thank you","thanks jia", "thanks","thanks jiya","thank you jiya"]
+thank_responses=["You're welcome","always welcome,","my pleasure,","most welcome,"]
 passwordd=""
+useraffix="Ma'am"
+user=["Ma'am","Madam","Boss","Miss Jaatu"]
+
+def saybye():
+    res=random.choice(farewellwords)
+    res=res+random.choice(user)
+    return res
+
+def greet():
+    res=random.choice(greetwords)
+    res=res+random.choice(user)
+    return res
+
+def thanks():
+    res=random.choice(thank_responses)
+    res=res+random.choice(user)
+    return res
 
 class App(threading.Thread):
     def __init__(self, tk_root):
@@ -36,19 +56,24 @@ def wake():
         x=sleepy()
         if x in wakewords:
             print "heard wakewords"
-            engine.say(random.choice(greetwords))
+            engine.say(greet())
             engine.runAndWait()
             while (True):
                 print "inside while true"
                 x=sun()
                 if x in byewords:
-                    engine.say(random.choice(farewellwords))
+                    engine.say(saybye())
                     engine.runAndWait()
                     print "goodbye"
                     break
+                elif x in thankwords:
+                    engine.say(thanks())
+                    engine.runAndWait()
+                    continue
                 else:
                     logic(x)
-                    #thread.start_new_thread(logic,(x,)) this was so unnecessary
+                    #thread.start_new_thread(logic,(x,))
+                    #this was sooooooooo unnecessary!!!
                
 
 def sleepy():
@@ -63,6 +88,9 @@ def sleepy():
             a = r.recognize_google(audio)
             print "heard"
             return a
+    except KeyboardInterrupt:
+        print "hit"
+        pass
     except:
         print "except"
         pass
@@ -79,6 +107,9 @@ def sun():
                 audio = r.listen(source)
                 a = r.recognize_google(audio)
                 #return a
+        except KeyboardInterrupt:
+            print "key pressed"
+            break
         except:
             response.configure(text="Sorry. I didn't heard that.")
             engine.say("Sorry. I didn't heard that.")
@@ -194,26 +225,30 @@ frame3=tk.Frame(root,background="white",bd=4)
 frame3.configure(height=frame1["height"],width=frame1["width"])
 frame3.grid_propagate(0)
 
+vi=0 #voice index
+
 def voice_change():
     #print "voice"
-    global i
+    global vi
+    print vi
     voices = engine.getProperty('voices')
     try:
         i=i+1
-        #print i
-        engine.setProperty('voice',voices[i].id)
+        print i
+        engine.setProperty('voice',voices[vi].id)
         engine.say("voice changed.")
         engine.runAndWait()
+        #i=i+1
     except:
-        if i > 1:
-            #print i
+        if vi > 0:
+            print vi
             engine.say("i have these voices only.")
             engine.runAndWait()
-        elif i==1:
-            #print i
+        elif vi==0:
+            print vi
             engine.say("I have this voice only.")
             engine.runAndWait()
-        i=0
+        vi=0
         
 def rate_changed():
     #global var
@@ -296,7 +331,7 @@ def rem_password():
 def t_password():
     thread.start_new_thread(password,())
 
-i=0   
+   
 sb1= tk.Button(frame3,text="Change Voice",command=voice_change,bg="#A7DAFE")
 sb1.grid(row=0,column=0,padx=10,pady=10)
 
@@ -354,12 +389,13 @@ def v_details(x):
 for row in cursor:
     c = row[1]
     b = tk.Label(frame4, text=c)
-    b.grid(row=i, column=j)
+    b.grid(row=i, column=j,sticky="W")
     report=tk.Button(frame4, text="report", command = partial(v_report,row[0]))
     report.grid(row=i,column=j+1)
     detail=tk.Button(frame4, text="details", command = partial(v_details,row[0]))
     detail.grid(row=i,column=j+2)
     i=i+1
+
 
 
 
