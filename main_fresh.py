@@ -10,7 +10,7 @@ import threading
 from PIL import ImageTk, Image
 import random
 import msvcrt
-
+import ttk
 
  
 #initialisation
@@ -22,10 +22,13 @@ byewords = ['bye','goodbye','good night','catch you later','see ya','siya']
 greetwords = ['nice to see you back','good morning','welcome back','hi, I hope you are doing good','hi, how can I help you']
 farewellwords = ['bye','see you soon','happy to helped you','good bye','good night','have a great day']
 thankwords=["thank you","thanks jia", "thanks","thanks jiya","thank you jiya"]
-thank_responses=["You're welcome","always welcome,","my pleasure,","most welcome,"]
+thank_responses=["You're welcome","always welcome ","my pleasure ","most welcome,"]
+nonetwork=["Make sure you have internet connection ","Seems like internet is not available ","Check Internet connection I won't be able to help you "]
+notheardwords=["Sorry, I didn't hear you","I beg your pardon","Sorry, Will you please repeat that."]
 passwordd=""
 useraffix="Ma'am"
-user=["Ma'am","Madam","Boss","Miss Jaatu"]
+user=["Ma'am","Madam","Boss"]
+
 
 def saybye():
     res=random.choice(farewellwords)
@@ -41,6 +44,17 @@ def thanks():
     res=random.choice(thank_responses)
     res=res+random.choice(user)
     return res
+
+def internetError():
+    res=random.choice(nonetwork)
+    res=res+random.choice(user)
+    return res
+
+def notheard():
+    res=random.choice(notheardwords)
+    res=res+random.choice(user)
+    return res
+
 
 class App(threading.Thread):
     def __init__(self, tk_root):
@@ -93,6 +107,11 @@ def sleepy():
         pass
     except:
         print "except"
+        engine.say(internetError())
+        lbl.unload()
+        lbl.load('speak.gif')
+        engine.runAndWait()
+        lbl.unload()
         pass
 
 def sun():
@@ -110,9 +129,10 @@ def sun():
         except KeyboardInterrupt:
             print "key pressed"
             break
-        except:
-            response.configure(text="Sorry. I didn't heard that.")
-            engine.say("Sorry. I didn't heard that.")
+        except IOError:
+            x=notheard()
+            response.configure(text=x)
+            engine.say(x)
             lbl.unload()
             lbl.load('speak.gif')
             engine.runAndWait()
@@ -184,29 +204,33 @@ def showreports():
     
 root = tk.Tk()
 root.configure(background="white")
-#main_window
+root.title("JIA")
+#root.iconbitmap("jiaaa.jpg")
+ttk.Style().configure("TButton", relief="flat",background="#ccc",height=50,width=50)
 
-frame1=tk.Frame(root,width=340,height=340,background="Blue")
+
+#main_window
+frame1=tk.Frame(root,width=340,height=340,background="White")
 frame1.grid(row=0,column=0,columnspan=3)
-frame2=tk.Frame(root,width=80,height=200,background="#B0DEFF")
+frame2=tk.Frame(root,width=80,height=200,background="White")
 frame2.grid(row=0,column=3)
 frame2.configure(height=frame1["height"])
 frame2.grid_propagate(0)
 frame1.configure(height=frame1["height"],width=frame1["width"])
 frame1.grid_propagate(0)
 
-img1 = ImageTk.PhotoImage(Image.open("settings.jpg"))  
-b1 = tk.Button(frame2,image=img1, command=showsetting, height=50, width=50)
-b1.grid(row=1,column=0,padx=10,pady=15)
-img2 = ImageTk.PhotoImage(Image.open("home.jpg"))  
-b2 = tk.Button(frame2,image=img2, command=showhome, height=50, width=50)
-b2.grid(row=0,column=0,padx=10,pady=15)
-img3 = ImageTk.PhotoImage(Image.open("notes.jpg"))  
-b3 = tk.Button(frame2,image=img3, command=callback, height=50, width=50)
-b3.grid(row=2,column=0,padx=10,pady=15)
-img4 = ImageTk.PhotoImage(Image.open("reports.jpg"))  
-b4 = tk.Button(frame2,image=img4, command=showreports, height=50, width=50)
-b4.grid(row=3,column=0,padx=10,pady=15)
+img1 = ImageTk.PhotoImage(Image.open("settings.png"))  
+b1 = ttk.Button(frame2,image=img1, command=showsetting, style="TButton")
+b1.grid(row=1,column=0,padx=10,pady=13)
+img2 = ImageTk.PhotoImage(Image.open("home.png"))  
+b2 = ttk.Button(frame2,image=img2, command=showhome, style="TButton")
+b2.grid(row=0,column=0,padx=10,pady=13)
+img3 = ImageTk.PhotoImage(Image.open("notes.png"))  
+b3 = ttk.Button(frame2,image=img3, command=callback, style="TButton")
+b3.grid(row=2,column=0,padx=10,pady=13)
+img4 = ImageTk.PhotoImage(Image.open("reports.png"))  
+b4 = ttk.Button(frame2,image=img4, command=showreports,style="TButton")
+b4.grid(row=3,column=0,padx=10,pady=13)
 
 #home
 
@@ -215,13 +239,14 @@ lbl.grid(row=0,column=0,columnspan=3)
 lbl.load('still1.jpg')
 
 #request-response
-response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=42,height=3,bg="#B0DEFF",anchor=tk.W)
+response=tk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,width=42,height=3,fg="Black",bg="#909497",anchor=tk.W)
+#response=ttk.Label(root,text="Hey",justify=tk.LEFT,wraplength=200,anchor=tk.W,style="TButton")
 response.grid(row=1,column=0,columnspan=3)
-request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=42,height=3,bg="#B0DEFF",anchor=tk.E)
+request=tk.Label(root,text="",justify=tk.RIGHT,wraplength=200,width=42,height=3,fg="White",bg="Black",anchor=tk.E)
 request.grid(row=2,column=1,columnspan=3)
 
 #settings
-frame3=tk.Frame(root,background="white",bd=4)
+frame3=tk.Frame(root,background="#909497",bd=4)
 frame3.configure(height=frame1["height"],width=frame1["width"])
 frame3.grid_propagate(0)
 
@@ -332,27 +357,27 @@ def t_password():
     thread.start_new_thread(password,())
 
    
-sb1= tk.Button(frame3,text="Change Voice",command=voice_change,bg="#A7DAFE")
+sb1= tk.Button(frame3,text="Change Voice",command=voice_change,bg="Black",fg="White")
 sb1.grid(row=0,column=0,padx=10,pady=10)
 
 rvar=tk.IntVar()
-rx = tk.Scale(frame3,label="Speech Rate",bd=1,bg="#B0DEFF",troughcolor="#A7DAFE",from_=0,to=200,orient=tk.HORIZONTAL,variable=rvar,resolution=10,length=250)
+rx = tk.Scale(frame3,label="Speech Rate",bd=1,bg="Black",fg="White",troughcolor="White",from_=0,to=200,orient=tk.HORIZONTAL,variable=rvar,resolution=10,length=250)
 rx.grid(row=1,column=0,padx=10,pady=10)
-sb2= tk.Button(frame3,text="Test",command=rate_changed,bg="#A7DAFE")
+sb2= tk.Button(frame3,text="Test",command=rate_changed,bg="Black",fg="White")
 sb2.grid(row=1,column=1,padx=10,pady=10)
 
 vvar=tk.DoubleVar()
-vx = tk.Scale(frame3,label="Speech volume",bd=1,bg="#B0DEFF",troughcolor="#A7DAFE",from_=1,to=10,orient=tk.HORIZONTAL,variable=vvar,resolution=1,length=250)
+vx = tk.Scale(frame3,label="Speech volume",bd=1,bg="Black",troughcolor="White",from_=1,to=10,orient=tk.HORIZONTAL,variable=vvar,resolution=1,length=250)
 vx.grid(row=2,column=0,padx=10,pady=10)
-sb3= tk.Button(frame3,text="Test",command=vol_changed,bg="#A7DAFE")
+sb3= tk.Button(frame3,text="Test",command=vol_changed,bg="Black",fg="White")
 sb3.grid(row=2,column=1,padx=10,pady=10)
 
 t=tk.StringVar()
 t.set("set password")
-sb4= tk.Button(frame3,textvariable=t,command=t_password,bg="#A7DAFE")
+sb4= tk.Button(frame3,textvariable=t,command=t_password,bg="Black",fg="White")
 sb4.grid(row=3,column=0,padx=10,pady=10)
 
-sb5= tk.Button(frame3,text="Remove password",command=rem_password,bg="#A7DAFE")
+sb5= tk.Button(frame3,text="Remove password",command=rem_password,bg="#A7DAFE",fg="White")
 
 #reports
 frame4=tk.Frame(root,background="#B0DEFF",bd=4)
