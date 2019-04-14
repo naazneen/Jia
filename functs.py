@@ -9,6 +9,9 @@ import datetime
 import Tkinter as tk
 from PIL import Image, ImageTk
 from itertools import count
+import os,fnmatch
+import re
+import threading
 
 engine = pyttsx.init()
 engine.setProperty('rate', 110)
@@ -153,4 +156,71 @@ class ImageLabel(tk.Label):
             self.config(image=self.frames[self.loc])
             self.after(self.delay, self.next_frame)
 
+def playonline(s):
+    browser = webdriver.Chrome('C:\Users\ABDUL\Downloads\chromedriver_win32\chromedriver')
+    print "in search"
+    browser.get('https://www.youtube.com/results?search_query='+s)  
+    try:
+        vid = browser.find_element_by_css_selector('a.yt-simple-endpoint.style-scope.ytd-video-renderer')
+        print "found"
+    except:
+        pass
+    vid.click()
+    print "clicked"
 
+
+#find
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+def find_all(name, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            result.append(os.path.join(root, name))
+    return result
+
+def findpattern(pattern, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                result.append(os.path.join(root, name))
+    return result
+
+def play(song):
+    mp3=".mp3"
+    mp4=".mp4"
+    y = re.search('play',song).span()
+    #print y
+    z=y[1]
+    #print z
+    #print "success"
+    s=song[z+1:]
+    print s
+    p=findpattern(s+mp4,'E:')
+    try:
+        os.startfile(p[0])
+        return
+    except:
+        pass
+    try:
+        p=findpattern(s+mp3,'E:')
+        os.startfile(p[0])
+        return
+    except:
+        pass
+    try:
+        print "else"
+        playonline(s)
+        #threading.Thread(target=playonline, args=(s,)).start()
+    except:
+        pass
+
+#play("jia play jogi")
+
+def makenote(x):
+    t = re.search('that',x).span()
+    z = t[1]

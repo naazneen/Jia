@@ -11,7 +11,8 @@ from PIL import ImageTk, Image
 import random
 import msvcrt
 import ttk
-
+import os
+import re
  
 #initialisation
 r = sr.Recognizer()
@@ -24,7 +25,7 @@ farewellwords = ['bye','see you soon','happy to helped you','good bye','good nig
 thankwords=["thank you","thanks jia", "thanks","thanks jiya","thank you jiya"]
 thank_responses=["You're welcome","always welcome ","my pleasure ","most welcome,"]
 nonetwork=["Make sure you have internet connection ","Seems like internet is not available ","Check Internet connection I won't be able to help you "]
-notheardwords=["Sorry, I didn't hear you","I beg your pardon","Sorry, Will you please repeat that."]
+notheardwords=["Sorry, I didn't hear you","I beg your pardon","Sorry, Can you please repeat that."]
 nomicwords=["Microphone is not detected."]
 passwordd=""
 useraffix="Ma'am"
@@ -63,7 +64,6 @@ def nomic():
     return res
 
 
-
 class App(threading.Thread):
     def __init__(self, tk_root):
         self.root = tk_root
@@ -78,7 +78,7 @@ def wake():
         x=sleepy()
         if (x==False):
             break
-        if x in wakewords:
+        elif x in wakewords:
             print "heard wakewords"
             engine.say(greet())
             engine.runAndWait()
@@ -98,7 +98,12 @@ def wake():
                     logic(x)
                     #thread.start_new_thread(logic,(x,))
                     #this was sooooooooo unnecessary!!!
-               
+        if (re.search('jiya',x)):
+            y = re.search('jiya',x).span()
+            z = y[1]
+            x = x[z+1:]
+            logic(x)
+            
 
 def sleepy():
     print "inside sleepy"
@@ -126,15 +131,18 @@ def sleepy():
         lbl.load('still1.jpg')
         print "inside except"
         return False
-    except:
-        print "except"
-        response.configure(text=internetError())
-        engine.say(internetError())
+    except Exception:
+        print Exception
+        return False
+        """
+        ierror=internetError()
+        response.configure(text=ierror)
+        engine.say(ierror)
         lbl.unload()
         lbl.load('speak.gif')
         engine.runAndWait()
-        lbl.unload()
-        pass
+        lbl.unload()"""
+    
 
 def sun():
     print ("inside sun")
@@ -179,16 +187,25 @@ def sun():
 
 def logic(x):
     print ("inside logic")
+    x=str(x)
+    x=x.lower()
     print x
     #lbl.unload()
     #x='hi'
     """while(True):
         x=sun()"""
     request.config(text=x)
-    if (x=="who are you"):
-        f.intro()   
-    elif(x=="who is your best friend"):
-        engine.say("you are my best friend, ma'am")
+    if (re.search('play',x)):
+        threading.Thread(target=f.play,args=(x,)).start()
+        return
+    elif (re.search('find',x)):
+        y=f.find(x)
+        engine.say(y)
+        response.config(text=y)
+    elif(re.search('open',x)):
+        y=f.find(x)
+        os.startfile(y[0])
+        engine.say("Here it is.")
         #engine.runAndWait()
     elif (x=="name some fruits"):
         y=f.fruits()
@@ -437,7 +454,7 @@ frame42.grid(row=1,column=0,sticky="SW")
 
 f4title=tk.Label(frame41,text="Reports",font=('Comic Sans',16))
 f4title.grid(row=0,column=0,columnspan=2)
-conn = sqlite3.connect('C:\Users\User10\Downloads\sqlite-tools-win32-x86-3270200\sqlite-tools-win32-x86-3270200\dbva.db')
+conn = sqlite3.connect('C:\Users\ABDUL\Downloads\sqlite-tools-win32-x86-3240000\sqlite-tools-win32-x86-3240000\dbva.db')
 print "Opened database successfully";
 cursor = conn.execute("SELECT * from reports")
 
@@ -484,14 +501,20 @@ f5title.grid(row=0,column=0,columnspan=3)
 ncursor = conn.execute("SELECT * from notes")
 
 ni=1
-nj=0
+nj=-1
 for row in ncursor:
-    nc = row[1]
-    nb = tk.Label(frame5,relief="ridge",wraplength=45,justify="left",text=nc,width=10,height=5,anchor="nw",bg="white")
+    nj+=1
+    if row[3]==1:
+        nc="Protected. Click to View"
+        nb = tk.Button(frame5,relief="ridge",wraplength=67,justify="left",text=nc,width=10,height=5,anchor="nw",bg="white") 
+    elif row[3]==0:    
+        nc = row[1]
+        nb = tk.Label(frame5,relief="ridge",wraplength=67,justify="left",text=nc,width=10,height=5,anchor="nw",bg="white")
     if nj==3:
         ni+=1
+        nj=0
     nb.grid(row=ni, column=nj,sticky="W",padx=5,pady=3)
-    nj+=1
+    
     
     """nd=row[2]
     ne = tk.Label(frame5,relief="ridge", text=nd,width=30,bg="white",padx=5,anchor="w")
@@ -501,4 +524,3 @@ for row in ncursor:
 
 APP = App(root)
 root.mainloop()
-    
